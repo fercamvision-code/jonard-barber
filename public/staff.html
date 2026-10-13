@@ -1,0 +1,19 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0905">
+<link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg"><link rel="apple-touch-icon" href="/icon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><title>J.J. Barber · Equipo</title>
+<style>*{box-sizing:border-box}body{margin:0;background:linear-gradient(#1b1209,#0c0905);color:#f4efe6;font-family:system-ui,sans-serif;padding:16px;padding-top:max(16px,env(safe-area-inset-top));min-height:100vh}
+h1{color:#d4a84b;font-family:Georgia,serif;font-size:1.3em;margin:0}.card{background:#1b150d;border:1px solid #3a2e17;border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 6px 0 #000}
+input,button{width:100%;padding:14px;margin:6px 0;border-radius:14px;border:1px solid #5a4a28;background:#000;color:#fff;font:inherit}button{background:linear-gradient(#f6dc8b,#c8962f 60%,#8a5f12);color:#000;font-weight:800;border:0;box-shadow:0 5px 0 #4d3406}
+.state{font-size:1.25em;color:#f6dc8b}.t{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #2c2312}.past{opacity:.4}.pend{color:#ff9;font-size:.8em}.free{color:#7fe08a}.err{color:#f77}</style></head><body>
+<div id="lg"><h1>✂ J.J. Barber · Equipo</h1><div class="card"><input id="u" placeholder="Usuario" autocapitalize="none" autocomplete="username"><input id="p" type="password" placeholder="Contraseña" autocomplete="current-password"><button onclick="login()">Entrar</button><p class="err" id="e"></p></div></div>
+<div id="ag" hidden><h1 id="nm"></h1><div class="card"><div class="state" id="stt"></div><small id="sh"></small></div><div class="card"><b>Mi agenda de hoy</b><div id="tk"></div></div><div class="card"><b>Horarios libres</b><div id="gp" class="free"></div></div><button onclick="localStorage.clear();location.reload()">Salir</button></div>
+<script>
+const $=s=>document.querySelector(s);if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+async function login(){const r=await fetch('/api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({user:$('#u').value.trim().toLowerCase(),pass:$('#p').value})}).then(r=>r.json());
+ if(r.token&&r.role=='staff'){localStorage.tk=r.token;load()}else $('#e').textContent=r.error||'Esta app es solo para profesionales'}
+async function load(){if(!localStorage.tk)return;const r=await fetch('/api/me/agenda',{headers:{authorization:'Bearer '+localStorage.tk}});
+ if(r.status==401){localStorage.clear();$('#lg').hidden=false;$('#ag').hidden=true;return}const a=await r.json();$('#lg').hidden=true;$('#ag').hidden=false;
+ $('#nm').textContent='Hola, '+a.name;$('#stt').textContent=a.state;$('#sh').textContent='Turno: '+a.shift;
+ $('#tk').innerHTML=a.tickets.length?a.tickets.map(t=>`<div class="t ${t.past?'past':''}"><span><b>${t.time}</b></span><span>${t.customer}${t.minor?' 🧒':''}<br><small>${t.service}</small>${t.status!='paid'?'<br><span class="pend">pago pendiente</span>':''}</span></div>`).join(''):'<p>Sin clientes asignados</p>';
+ $('#gp').innerHTML=a.gaps.length?a.gaps.join('<br>'):'Sin huecos hoy'}
+load();setInterval(load,20000);
+</script></body></html>

@@ -1,0 +1,5 @@
+node_modules/
+jonard.db
+jonard.db-*
+*.log
+.env

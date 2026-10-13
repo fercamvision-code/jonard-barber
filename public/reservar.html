@@ -1,0 +1,34 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0c0905"><title>Reservá tu turno · J.J. Barber</title>
+<style>*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;color:#f4efe6;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;background:linear-gradient(rgba(10,7,4,.55),rgba(10,7,4,.85)),url(/fondo.jpg) center/cover fixed no-repeat,url(/fondo.svg) center/cover fixed no-repeat,#0b0805}
+main{max-width:640px;margin:auto;padding:20px 16px 60px}header{text-align:center}.logo{width:100px;height:100px;border-radius:50%;margin:auto;display:grid;place-items:center;background:#120d07;border:4px solid #c8962f;box-shadow:0 6px 18px #000;font:700 36px Georgia,serif;color:#f6dc8b}
+h1{font-family:Georgia,serif;letter-spacing:.15em;margin:.3em 0 0;font-size:1.9em;background:linear-gradient(#f6dc8b,#c8962f 60%,#8a5f12);-webkit-background-clip:text;background-clip:text;color:transparent}.sub{letter-spacing:.35em;font-size:.7em;color:#c8962f;margin-bottom:1em}
+h2{font-family:Georgia,serif;font-weight:400;color:#f6dc8b;text-align:center}.btn{display:block;width:100%;font:inherit;color:#f4efe6;text-align:left;cursor:pointer;padding:18px;margin:14px 0;border-radius:22px;border:1px solid #6b5a3a;text-decoration:none;background:linear-gradient(#4a4033,#241d15 50%,#14100b);box-shadow:0 7px 0 #000,0 12px 18px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.2)}
+.btn:active{transform:translateY(6px);box-shadow:0 1px 0 #000}.btn b{color:#f6dc8b;margin-left:8px}.gold{background:linear-gradient(#fbe9a8,#c8962f 55%,#8a5f12);color:#1a1200;font-weight:800;text-align:center;box-shadow:0 7px 0 #4d3406,0 12px 18px rgba(0,0,0,.6),inset 0 3px 0 rgba(255,255,255,.5)}
+.ghost{text-align:center}.sel{border-color:#f6dc8b;background:linear-gradient(#7a5f1d,#3d2e0b)}.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:4px 12px}.slot{text-align:center;padding:14px 4px}
+input{width:100%;padding:14px;font:inherit;background:#0c0905;color:#fff;border:1px solid #6b5a3a;border-radius:14px;margin:4px 0 12px}label{font-size:.72em;color:#c8962f;letter-spacing:.1em;text-transform:uppercase}.err{color:#ff7b7b}.c{text-align:center}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}</style></head><body><main>
+<header><div class="logo">J.J.</div><h1>J.J. BARBER</h1><div class="sub">RESERVÁ TU TURNO ONLINE</div></header><div id="app"></div></main>
+<script>
+const $=s=>document.querySelector(s),app=$('#app');let S={minor:false,svc:null,ts:null,gen:''},timer,busy=false;
+const api=(u,o)=>fetch(u,o).then(r=>r.json().then(j=>({ok:r.ok,data:j})));
+const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+async function home(){clearInterval(timer);const {data:s}=await api('/api/services');
+ app.innerHTML=`<button class="btn ${S.minor?'sel':''}" id="kid">🧒 ¿El corte es para un menor? <b>${S.minor?'SÍ':'NO'}</b></button><h2>Elegí tu servicio</h2>${s.map(x=>`<button class="btn card" data-id="${x.id}">${x.name}<b>$${x.price}</b> <small>· ${x.minutes} min</small></button>`).join('')}`;
+ $('#kid').onclick=()=>{S.minor=!S.minor;home()};app.querySelectorAll('.card').forEach(b=>b.onclick=()=>{S.svc=+b.dataset.id;when()})}
+function when(){const t=new Date(),mx=new Date(Date.now()+13*864e5);
+ app.innerHTML=`<h2>¿Qué día querés venir?</h2><input id="d" type="date" min="${ymd(t)}" max="${ymd(mx)}" value="${ymd(t)}"><h2>Horarios disponibles</h2><div id="sl" class="slots"></div><button class="btn ghost" id="b">Volver</button>`;$('#b').onclick=home;
+ const load=async()=>{$('#sl').textContent='Cargando…';const {data}=await api(`/api/slots?serviceId=${S.svc}&minor=${S.minor?1:0}&date=${$('#d').value}`);
+  $('#sl').innerHTML=data.slots&&data.slots.length?data.slots.map(x=>`<button class="btn slot" data-ts="${x.ts}">${x.label}</button>`).join(''):'<p class="c" style="grid-column:1/-1">Sin horarios ese día. Probá otra fecha.</p>';
+  document.querySelectorAll('.slot').forEach(b=>b.onclick=()=>{S.ts=+b.dataset.ts;form()})};$('#d').onchange=load;load()}
+function form(){app.innerHTML=`<h2>${S.minor?'Datos del menor':'Tus datos'}</h2><label>${S.minor?'Nombre del menor':'Nombre'} *</label><input id="first"><label>Apellido *</label><input id="last"><label>${S.minor?'Teléfono del adulto responsable':'Teléfono / WhatsApp'} *</label><input id="phone" type="tel" inputmode="tel">
+<label>Fecha de nacimiento *</label><input id="birthday" type="date"><label>Email (opcional)</label><input id="email" type="email"><label>Dirección (opcional)</label><input id="address"><div class="two"><button class="btn slot" id="gM">👨 Hombre</button><button class="btn slot" id="gF">👩 Mujer</button></div>
+<p class="err" id="err"></p><button class="btn gold" id="go">CONTINUAR AL PAGO</button><button class="btn ghost" id="b">Volver</button>`;
+ const g=v=>{S.gen=v;$('#gM').classList.toggle('sel',v=='M');$('#gF').classList.toggle('sel',v=='F')};$('#gM').onclick=()=>g('M');$('#gF').onclick=()=>g('F');$('#b').onclick=when;
+ $('#go').onclick=async()=>{if(busy)return;const c={gender:S.gen};['first','last','phone','birthday','email','address'].forEach(k=>c[k]=$('#'+k).value.trim());
+  if(!c.first||!c.last||!c.phone||!c.birthday||!c.gender)return $('#err').textContent='Completá los campos obligatorios (*)';
+  busy=true;$('#go').textContent='PROCESANDO…';const {ok,data}=await api('/api/book',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({customer:c,serviceId:S.svc,minor:S.minor,ts:S.ts})});
+  busy=false;$('#go').textContent='CONTINUAR AL PAGO';if(!ok)return $('#err').textContent=data.error;pay(data)}}
+function pay(r){app.innerHTML=`<div class="c"><h2>Tu turno</h2><p>📅 <b>${r.when}</b><br>💈 Te atiende <b>${r.professional}</b></p><h2>Total $${r.amount}</h2><a class="btn gold" href="${r.payUrl}" target="_blank" rel="noopener">PAGAR AHORA</a><p>Cuando el pago se acredite, esta pantalla se confirma sola.<br><small>Tenés 10 minutos para pagar y mantener el horario.</small></p></div>`;
+ timer=setInterval(async()=>{const {data:t}=await api('/api/ticket/'+r.ticketId);if(t.status=='paid'){clearInterval(timer);app.innerHTML=`<div class="c"><h2>✅ ¡Turno confirmado!</h2><p>📅 <b>${r.when}</b></p><p>💈 Profesional: <b>${r.professional}</b></p><p>Te enviamos el comprobante por mensaje.</p></div>`}
+  if(t.status=='cancelled'){clearInterval(timer);app.innerHTML='<div class="c"><h2>El turno venció</h2><button class="btn gold" onclick="home()">Elegir otro horario</button></div>'}},3000)}
+home();
+</script></body></html>

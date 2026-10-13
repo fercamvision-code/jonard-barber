@@ -1,0 +1,54 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>J.J. Barber</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>:root{--g1:#f6dc8b;--g2:#c8962f;--g3:#8a5f12}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%}
+body{color:#f4efe6;font-family:'Segoe UI',system-ui,sans-serif;font-size:clamp(16px,2.1vw,24px);user-select:none;
+background:radial-gradient(ellipse at 50% -10%,rgba(212,168,75,.22),transparent 55%),linear-gradient(rgba(10,7,4,.25),rgba(10,7,4,.5)),url(/fondo.jpg) center/cover no-repeat,url(/fondo.svg) center/cover no-repeat,#0b0805;background-attachment:fixed}
+.pole{position:fixed;top:0;bottom:0;width:clamp(10px,1.6vw,22px);background:repeating-linear-gradient(135deg,#b3202a 0 14px,#f2f2f2 14px 28px,#1d3f8f 28px 42px,#f2f2f2 42px 56px);background-size:80px 80px;animation:p 6s linear infinite;box-shadow:0 0 18px #000;border-inline:2px solid var(--g2);z-index:5}
+.pole.l{left:0}.pole.r{right:0}@keyframes p{to{background-position:0 80px}}
+main{max-width:1100px;margin:auto;padding:clamp(18px,3vw,36px) clamp(26px,5vw,60px) 40px}
+header{text-align:center}header svg{width:clamp(110px,16vw,170px);filter:drop-shadow(0 6px 14px #000)}
+h1{font-family:'Playfair Display',Georgia,serif;margin:.1em 0;font-size:clamp(28px,5vw,54px);letter-spacing:.18em;background:linear-gradient(180deg,var(--g1),var(--g2) 60%,var(--g3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{letter-spacing:.4em;font-size:.6em;color:var(--g2);margin-bottom:1.4em}h2{font-family:Georgia,serif;font-weight:400;color:var(--g1);text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;margin:18px 0 26px}
+.btn{font:inherit;color:#f4efe6;text-align:left;cursor:pointer;padding:22px;min-height:72px;border-radius:26px;border:1px solid #6b5a3a;background:linear-gradient(180deg,#4a4033 0,#241d15 50%,#14100b 100%);
+box-shadow:0 8px 0 #000,0 14px 22px rgba(0,0,0,.65),inset 0 2px 0 rgba(255,255,255,.2),inset 0 -6px 12px rgba(0,0,0,.5);transition:transform .08s,box-shadow .08s;position:relative;top:0}
+.btn:active{transform:translateY(7px);box-shadow:0 1px 0 #000,0 3px 8px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.1),inset 0 -4px 10px rgba(0,0,0,.5)}
+.btn b{display:block;color:var(--g1);font-size:1.15em;margin-top:6px}.btn small{opacity:.7}
+.gold{background:linear-gradient(180deg,#fbe9a8,var(--g2) 55%,var(--g3));color:#1a1200;font-weight:800;text-align:center;border-color:#f6dc8b;box-shadow:0 8px 0 #4d3406,0 14px 22px rgba(0,0,0,.65),inset 0 3px 0 rgba(255,255,255,.55),inset 0 -6px 10px rgba(80,50,0,.4);width:100%;margin-top:14px;letter-spacing:.08em}
+.ghost{width:100%;text-align:center;margin-top:20px;min-height:58px;padding:14px}.sel{border-color:var(--g1)!important;background:linear-gradient(180deg,#7a5f1d,#3d2e0b 60%,#241a05)!important}
+.kid{width:100%;display:flex;align-items:center;gap:16px}.kid .ic{font-size:2em}.kid span{flex:1}.kid em{font-style:normal;font-weight:800;padding:6px 16px;border-radius:99px;background:#000;color:var(--g2)}.kid.sel em{background:var(--g1);color:#000}
+input{width:100%;padding:16px;font:inherit;background:#0c0905;color:#fff;border:1px solid #6b5a3a;border-radius:16px;margin:4px 0 14px;box-shadow:inset 0 3px 8px #000}input:focus{outline:2px solid var(--g2)}
+label{font-size:.75em;color:var(--g2);letter-spacing:.12em;text-transform:uppercase}.row{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.rowb{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:6px 0}
+@media(max-width:600px){.row,.rowb{grid-template-columns:1fr}}.c{text-align:center}#qr{display:inline-block;background:#fff;padding:16px;border-radius:20px;margin:14px;box-shadow:0 0 0 4px var(--g2),0 14px 30px #000}.err{color:#ff7b7b;min-height:1.2em}
+.badge{display:inline-block;background:var(--g2);color:#000;border-radius:99px;padding:2px 12px;font-size:.7em;font-weight:800}</style></head><body>
+<div class="pole l"></div><div class="pole r"></div>
+<main><header><svg viewBox="0 0 200 200"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbe9a8"/><stop offset=".55" stop-color="#c8962f"/><stop offset="1" stop-color="#8a5f12"/></linearGradient></defs>
+<circle cx="100" cy="100" r="92" fill="#120d07" stroke="url(#g)" stroke-width="6"/><circle cx="100" cy="100" r="80" fill="none" stroke="url(#g)" stroke-width="1.5"/>
+<text x="100" y="122" text-anchor="middle" font-family="Georgia,serif" font-size="68" font-weight="700" fill="url(#g)" letter-spacing="2">J.J.</text>
+<text x="100" y="168" text-anchor="middle" font-family="Georgia,serif" font-size="17" font-weight="700" fill="url(#g)" letter-spacing="4">EST. 2026</text><text x="100" y="34" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="url(#g)" letter-spacing="3">★ ★ ★</text></svg>
+<h1>J.J. BARBER</h1><div class="sub">BARBERÍA DE ÉLITE</div></header><div id="app"></div></main>
+<script>
+const $=s=>document.querySelector(s),app=$('#app');let svc,minor=false,timer,idle,busy=false,tid=null;
+const api=(u,o)=>fetch(u,o).then(r=>r.json().then(j=>({ok:r.ok,data:j})));
+const bump=()=>{clearTimeout(idle);idle=setTimeout(home,120000)};['click','touchstart'].forEach(e=>addEventListener(e,bump));
+async function home(){clearInterval(timer);busy=false;tid=null;const {data:s}=await api('/api/services');
+ app.innerHTML=`<button class="btn kid ${minor?'sel':''}" id="kid"><span class="ic">🧒</span><span><b>¿El corte es para un menor de edad?</b><small>Te asignamos al especialista en cortes infantiles</small></span><em>${minor?'SÍ':'NO'}</em></button>
+ <h2>Elegí tu servicio</h2><div class="grid">${s.map(x=>`<button class="btn card" data-id="${x.id}">${x.name}<b>$${x.price}</b><small>${x.minutes} min</small></button>`).join('')}</div>`;
+ $('#kid').onclick=()=>{minor=!minor;home()};app.querySelectorAll('.card').forEach(b=>b.onclick=()=>{svc=+b.dataset.id;form()})}
+function form(){app.innerHTML=`<h2>${minor?'Datos del menor <span class="badge">INFANTIL</span>':'Tus datos'}</h2><div class="row"><div><label>${minor?'Nombre del menor':'Nombre'} *</label><input id="first"></div><div><label>Apellido *</label><input id="last"></div>
+<div><label>${minor?'Teléfono del adulto responsable':'Teléfono / WhatsApp'} *</label><input id="phone" type="tel" inputmode="tel"></div><div><label>Fecha de nacimiento *</label><input id="birthday" type="date"></div>
+<div><label>Email (opcional)</label><input id="email" type="email"></div><div><label>Dirección (opcional)</label><input id="address"></div></div>
+<div class="rowb"><button class="btn" id="gM">👨 Hombre</button><button class="btn" id="gF">👩 Mujer</button></div><p class="err" id="err"></p>
+<button class="btn gold" id="go">CONTINUAR AL PAGO</button><button class="btn ghost" id="back">Volver</button>`;let gen='';
+ const g=v=>{gen=v;$('#gM').classList.toggle('sel',v=='M');$('#gF').classList.toggle('sel',v=='F')};$('#gM').onclick=()=>g('M');$('#gF').onclick=()=>g('F');$('#back').onclick=home;
+ $('#go').onclick=async()=>{if(busy)return;const c={gender:gen};['first','last','phone','birthday','email','address'].forEach(k=>c[k]=$('#'+k).value.trim());
+  if(!c.first||!c.last||!c.phone||!c.birthday||!c.gender)return $('#err').textContent='Completá los campos obligatorios (*)';
+  busy=true;$('#go').textContent='PROCESANDO…';const {ok,data}=await api('/api/checkin',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({customer:c,serviceId:svc,minor})});
+  busy=false;if(!ok){$('#go').textContent='CONTINUAR AL PAGO';return $('#err').textContent=data.error}pay(data)}}
+function pay(r){tid=r.ticketId;app.innerHTML=`<div class="c"><h2>Escaneá con tu celular para pagar</h2><div id="qr"></div><h2>$${r.amount}</h2><p>Te atiende <b>${r.professional}</b> · aprox. ${r.time} hs</p><p>Esperando pago…</p><button class="btn ghost" id="x">Cancelar</button></div>`;
+ new QRCode($('#qr'),{text:r.qr,width:240,height:240});$('#x').onclick=async()=>{await api('/api/cancel',{method:'POST',body:JSON.stringify({ticketId:tid})});home()};
+ timer=setInterval(async()=>{const {data:t}=await api('/api/ticket/'+r.ticketId);if(t.status=='paid'){clearInterval(timer);
+  app.innerHTML=`<div class="c"><h2>✅ ¡Pago recibido!</h2><p>Profesional: <b>${t.professional}</b></p><p>Horario aproximado: <b>${t.time} hs</b></p><p>Te enviamos el comprobante por mensaje.</p></div>`;minor=false;setTimeout(home,12000)}
+  if(t.status=='cancelled')home()},2000)}
+home();bump();
+</script></body></html>

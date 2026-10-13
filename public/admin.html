@@ -1,0 +1,37 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin · J.J. Barber</title>
+<style>body{font-family:system-ui;background:#0c0905;color:#eee;margin:0;padding:16px}h1,h2,h3{color:#d4a84b}section{background:#1b150d;border:1px solid #3a2e17;border-radius:12px;padding:14px;margin:12px 0;overflow-x:auto}
+input,button{padding:10px;margin:3px;border-radius:8px;border:1px solid #5a4a28;background:#000;color:#eee;font:inherit}button{background:linear-gradient(#f6dc8b,#c8962f);color:#000;font-weight:700;cursor:pointer;border:0}
+table{border-collapse:collapse;width:100%}td,th{padding:6px;border-bottom:1px solid #333;text-align:left}label{margin-right:10px;white-space:nowrap}#login{max-width:340px;margin:12vh auto;text-align:center}#login input{width:90%}.err{color:#f77}</style></head><body>
+<div id="login"><h1>✂ J.J. Barber</h1><p>Acceso administrador</p><input id="pw" type="password" placeholder="Contraseña" onkeydown="event.key=='Enter'&&doLogin()"><br><button onclick="doLogin()">Entrar</button><p class="err" id="le"></p></div>
+<div id="panel" hidden><h1>Administración <button onclick="sessionStorage.clear();location.reload()" style="float:right">Salir</button></h1>
+<section><h2>Link para clientes (reservar desde casa)</h2><input id="lk" readonly style="width:70%" onclick="this.select()"><button onclick="navigator.clipboard.writeText($('#lk').value);this.textContent='¡Copiado!'">Copiar</button></section>
+<section><h2>Cola por profesional (pagados)</h2><div id="q"></div></section>
+<section><h2>Agentes y credenciales</h2><div id="st"></div><h3>Nuevo / editar profesional</h3><input id="sid" type="hidden">
+<input id="sn" placeholder="Nombre"> Desde <input id="ss" type="number" value="9" style="width:60px"> hasta <input id="se" type="number" value="20" style="width:60px">
+<br><input id="su" placeholder="Usuario (ej: marcos)" autocomplete="off"><input id="sp" type="password" placeholder="Contraseña (6+; vacío = no cambiar)" autocomplete="new-password" style="width:260px">
+<label><input id="sk" type="checkbox"> 🧒 Especialista en menores</label><label><input id="sa" type="checkbox" checked> Activo</label><div id="sv2"></div><button onclick="saveStaff()">Guardar</button> <span class="err" id="se2"></span></section>
+<section><h2>Servicios</h2><div id="sv"></div><input id="vi" type="hidden"><input id="vn" placeholder="Nombre"><input id="vc" placeholder="categoría"><input id="vp" type="number" placeholder="Precio"><input id="vm" type="number" placeholder="Minutos"><button onclick="saveSvc()">Guardar</button> <span class="err" id="ve"></span></section>
+<section><h2>Mensajes enviados</h2><div id="ms"></div></section></div>
+<script>
+const $=s=>document.querySelector(s);let S=[],V=[];const T=()=>sessionStorage.tk;
+const H=()=>({authorization:'Bearer '+T(),'content-type':'application/json'});
+async function call(u,b){const r=await fetch(u,b?{method:'POST',headers:H(),body:JSON.stringify(b)}:{headers:H()});if(r.status==401){sessionStorage.clear();show(false);throw 0}return r.json()}
+function show(on){$('#login').hidden=on;$('#panel').hidden=!on}
+async function doLogin(){const r=await fetch('/api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({user:'admin',pass:$('#pw').value})}).then(r=>r.json());
+ if(r.token){sessionStorage.tk=r.token;$('#pw').value='';load()}else $('#le').textContent=r.error}
+const tbl=(rows,cols)=>rows.length?`<table><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`:'<i>Sin datos</i>';
+async function load(){if(!T())return show(false);try{V=await fetch('/api/services').then(r=>r.json());S=await call('/api/admin/staff');show(true);
+ $('#sv').innerHTML=tbl(V.map(v=>[v.id,v.name,v.category,'$'+v.price,v.minutes+' min',`<button onclick="editSvc(${v.id})">Editar</button> <button onclick="delSvc(${v.id})" style="background:#c0392b;color:#fff">Eliminar</button>`]),['ID','Servicio','Cat.','Precio','Duración','']);
+ $('#sv2').innerHTML=V.map(v=>`<label><input type="checkbox" value="${v.id}">${v.name}</label>`).join('');
+ $('#st').innerHTML=tbl(S.map(s=>[s.name+(s.kids?' 🧒':''),`${s.start_h}-${s.end_h}h`,s.username||'<i>sin acceso</i>',s.services.map(i=>(V.find(v=>v.id==i)||{}).name).join(', '),s.active?'Sí':'No',`<button onclick="edit(${s.id})">Editar</button>`]),['Nombre','Horario','Usuario','Atiende','Activo','']);
+ const q=await call('/api/admin/queue');$('#q').innerHTML=tbl(q.map(r=>[r.professional,r.start+'–'+r.end,r.customer+(r.minor?' 🧒':''),r.service]),['Prof.','Hora','Cliente','Servicio']);
+ const m=await call('/api/admin/messages');$('#ms').innerHTML=tbl(m.map(x=>[new Date(x.ts).toLocaleString(),x.phone,x.body.replace(/\n/g,'<br>')]),['Fecha','Tel.','Mensaje'])}catch(e){}}
+function edit(id){const s=S.find(x=>x.id==id);$('#sid').value=id;$('#sn').value=s.name;$('#ss').value=s.start_h;$('#se').value=s.end_h;$('#su').value=s.username||'';$('#sp').value='';$('#sk').checked=!!s.kids;$('#sa').checked=!!s.active;
+ document.querySelectorAll('#sv2 input').forEach(c=>c.checked=s.services.includes(+c.value));scrollTo(0,document.body.scrollHeight/3)}
+async function saveStaff(){const r=await call('/api/admin/staff',{id:+$('#sid').value||undefined,name:$('#sn').value,start_h:+$('#ss').value,end_h:+$('#se').value,username:$('#su').value,password:$('#sp').value,kids:$('#sk').checked,active:$('#sa').checked?1:0,services:[...document.querySelectorAll('#sv2 input:checked')].map(c=>+c.value)});
+ $('#se2').textContent=r.error||'';if(!r.error){['sid','sn','su','sp'].forEach(i=>$('#'+i).value='');load()}}
+async function saveSvc(){const r=await call('/api/admin/services',{id:+$('#vi').value||undefined,name:$('#vn').value.trim(),category:$('#vc').value.trim()||'otro',price:+$('#vp').value,minutes:+$('#vm').value});$('#ve').textContent=r.error||'';if(!r.error){['vi','vn','vc','vp','vm'].forEach(i=>$('#'+i).value='');load()}}
+function editSvc(id){const v=V.find(x=>x.id==id);$('#vi').value=id;$('#vn').value=v.name;$('#vc').value=v.category;$('#vp').value=v.price;$('#vm').value=v.minutes}
+async function delSvc(id){if(confirm('¿Eliminar este servicio?')){await call('/api/admin/services',{id,del:1});load()}}
+$('#lk').value=location.origin+'/reservar';setInterval(()=>T()&&load(),20000);load();
+</script></body></html>
